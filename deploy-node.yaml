@@ -1,0 +1,55 @@
+---
+- name: Install node and npm
+  hosts: aws
+  become: true
+  tasks:
+    - name: Update yum repo and cache
+      yum : update_cache=yes 
+    - name: Install dependencies
+      yum :
+        pkg:
+        - gcc-c++
+        - make
+    - name: Script to add nodejs repo
+      shell: curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -   
+    - name: Install nodejs and npm
+      yum: 
+        name: nodejs
+        state: present
+
+- name: Create new linux user for node app
+  hosts: aws
+  become: true
+  tasks:
+    - name: Create linux user
+      user: 
+        name: marv
+        comment: Marvin Korir
+        group: wheel
+      
+
+- name: Deploy nodejs app
+  hosts: aws
+  become: true
+  become_user: marv
+  tasks:
+    - name: Unpack the nodejs file
+      unarchive:
+        src: /home/marv/Desktop/simple-nodejs/nodejs-app-1.0.0.tgz
+        dest: /home/marv/
+    - name: Install dependencies
+      npm:
+        path: /home/marv/package
+    - name: Start the application
+      command:
+        chdir: /home/marv/package/app
+        cmd: node server &
+      async: 1000
+      poll: 0
+    - name: Ensure app is running
+      shell: ps aux | grep node
+      register: app_status
+    - debug: msg={{app_status.stdout_lines}}
+    
+        
+

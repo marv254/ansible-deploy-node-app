@@ -1,0 +1,6 @@
+[aws]
+13.244.114.0
+
+[aws:vars]
+ansible_ssh_private_key_file=~/.ssh/myapp-key-pair.pem
+ansible_user=ec2-user
