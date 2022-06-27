@@ -2,3 +2,5 @@ version: 1.0.0
 location: /home/marv/Desktop/simple-nodejs
 linux_name: marv
 user_home_dir: /home/{{linux_name}}
+docker_password: shithommienopass
+user_groups: adm,docker

@@ -13,7 +13,7 @@ ansible_ssh_private_key_file=~/.ssh/myapp-key-pair.pem
 ansible_user=ec2-user
 
 [docker_server]
-13.245.206.247
+13.246.34.141
 
 [docker_server:vars]
 ansible_ssh_private_key_file=~/.ssh/id_rsa
