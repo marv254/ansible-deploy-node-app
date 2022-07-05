@@ -28,21 +28,24 @@
       dest: /usr/local/bin/docker-compose
       mode: +x 
 
-- name: Start docker and user to docker group
+- name: Start docker 
   hosts: tag_Name_dev_server
   become: yes
-  vars_files:
-  - project-vars
+ 
   tasks:
     - name: Ensure docker is running
       systemd:
         name: docker
         state: started
-
-    - name: Create new linux user
-      user: 
-        name: marv
-        groups: "{{user_groups}}"
+  
+- name: Start docker 
+  hosts: tag_Name_dev_server
+  become: yes
+  vars_files:
+    - project-vars
+  roles:
+    - create_user
+  
 
 
 - name: Start docker containers
@@ -50,20 +53,7 @@
   become: yes
   become_user: marv
   vars_files:
-  - project-vars
- 
-  tasks:
-    - name: Copy docker compose
-      copy:
-        src: /home/marv/Desktop/ansible/docker-compose.yaml
-        dest: /home/marv/docker-compose.yaml
-
-    - name: Docker login
-      docker_login:
-        registry_url: https://index.docker.io/v1
-        username: marv254
-        password: "{{docker_password}}"
+    - project-vars
+  roles:
+    - start_containers
     
-    - name: Start containers from docker compose
-      docker_compose:
-        project_src: /home/marv
